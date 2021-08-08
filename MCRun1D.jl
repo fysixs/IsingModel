@@ -1,8 +1,6 @@
 using HDF5
 using Statistics
 
-
-
 # ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ
 # Data Defs
 # ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ
@@ -151,6 +149,7 @@ function MC_run!(iter, lat::Lattice, data)
         
         if step%iter[2] == 0
             k = step ÷ iter[2] + 1
+            println("Step $((k-1)*iter[2])")
             data["energy"][k]  = mean(Eavg)
             data["mag"][k]     = lat.M
             data["spins"][:,k] = lat.spins
@@ -166,13 +165,13 @@ end
 # Interface
 # ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ
 
-function main()
-    nspins = 1e4 |> Int
-    eps    = 1.0
-    temp   = 1.5
+function main(args)
+    nspins = parse(Float64, args[1]) |> Int #1e4 |> Int
+    eps    = parse(Float64, args[2]) #1.0
+    temp   = parse(Float64, args[3]) #1.5
     pbc    = true
-    iters  = 1e7 |> Int
-    wrt_it = 1e3 |> Int
+    iters  = parse(Float64, args[4]) |> Int #1e7 |> Int
+    wrt_it = parse(Float64, args[5]) |> Int #1e3 |> Int
 
     lattice_pbc = Lattice(nspins, eps, temp, pbc)
 
@@ -197,4 +196,4 @@ function main()
     close(data)
 end
 
-@time main()
+main(ARGS)
