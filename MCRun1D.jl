@@ -166,12 +166,12 @@ end
 # ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ
 
 function main(args)
-    nspins = parse(Float64, args[1]) |> Int #1e4 |> Int
-    eps    = parse(Float64, args[2]) #1.0
-    temp   = parse(Float64, args[3]) #1.5
+    nspins = parse(Float64, args[1]) |> Int
+    eps    = parse(Float64, args[2]) 
+    temp   = parse(Float64, args[3]) 
     pbc    = true
-    iters  = parse(Float64, args[4]) |> Int #1e7 |> Int
-    wrt_it = parse(Float64, args[5]) |> Int #1e3 |> Int
+    iters  = parse(Float64, args[4]) |> Int 
+    wrt_it = parse(Float64, args[5]) |> Int 
 
     lattice_pbc = Lattice(nspins, eps, temp, pbc)
 
@@ -182,6 +182,13 @@ function main(args)
     create_dataset( data, "corr",   datatype(1.0), dataspace( ((nspins-1) ÷ 2,) ) )
     create_dataset( data, "spins",  datatype(1.0), dataspace( (nspins, data_dims) ) )
     
+    create_dataset( data, "params", datatype(1.0), dataspace( (5,) ) )
+    
+    data["params"][1] = nspins
+    data["params"][2] = eps
+    data["params"][3] = temp
+    data["params"][4] = iters
+    data["params"][5] = wrt_it
     
     MC_run!( (iters, wrt_it), lattice_pbc, data )
     
